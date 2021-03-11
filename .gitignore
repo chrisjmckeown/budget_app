@@ -1,4 +1,6 @@
 public/dist/
+.env.test
+.env.development
 
 # secure information
 default.json*
