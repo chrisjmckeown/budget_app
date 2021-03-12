@@ -12,6 +12,7 @@ import expenses from '../fixtures/expenses';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import database from '../../firebase/firebase';
+import moment from 'moment';
 
 const createMockStore = configureMockStore([thunk]);
 
@@ -63,10 +64,15 @@ test('should setup edit expense action object', () => {
   });
 });
 
-test('should edit expense from firebase', () => {
+test('should edit expense from firebase', (done) => {
   const store = createMockStore({});
   const id = expenses[2].id;
-  const updates = { note: 'New note value' };
+  const updates = {
+    description: 'Rent',
+    note: '',
+    amount: 109500,
+    createdAt: moment(0).subtract(4, 'days').valueOf(),
+  };
   store
     .dispatch(startEditExpense(id, updates))
     .then(() => {
@@ -79,7 +85,7 @@ test('should edit expense from firebase', () => {
       return database.ref(`expenses/${id}`).once('value');
     })
     .then((snapshot) => {
-      expect(snapshot.val().note).toBe(updates.note);
+      expect(snapshot.val().amount).toBe(updates.amount);
       done();
     });
 });
